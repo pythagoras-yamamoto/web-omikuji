@@ -225,6 +225,3 @@ dist
 # Temporary folders
 tmp/
 temp/
-
-# Claude
-.claude/
