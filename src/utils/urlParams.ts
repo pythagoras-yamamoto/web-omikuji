@@ -1,69 +1,68 @@
-import { OmikujiConfig } from '@/types/omikuji'
+const NAMES_PARAM = 'names'
 
-const CONFIG_PARAM = 'config'
-
-export function encodeConfigToUrl(config: OmikujiConfig): string {
+export function encodeNamesToUrl(names: string[]): string {
   try {
-    const encoded = btoa(encodeURIComponent(JSON.stringify(config)))
+    const namesString = names.join(',')
+    const encoded = btoa(unescape(encodeURIComponent(namesString)))
     const url = new URL(window.location.href)
-    url.searchParams.set(CONFIG_PARAM, encoded)
+    url.searchParams.set(NAMES_PARAM, encoded)
     return url.toString()
   } catch (error) {
-    console.error('Failed to encode config to URL:', error)
+    console.error('Failed to encode names to URL:', error)
     return window.location.href
   }
 }
 
-export function decodeConfigFromUrl(url?: string): OmikujiConfig | null {
+export function decodeNamesFromUrl(url?: string): string[] {
   try {
     const urlObj = new URL(url || window.location.href)
-    const encoded = urlObj.searchParams.get(CONFIG_PARAM)
+    const encoded = urlObj.searchParams.get(NAMES_PARAM)
     
-    if (!encoded) return null
+    if (!encoded) return []
     
-    const decoded = JSON.parse(decodeURIComponent(atob(encoded)))
-    
-    // 基本的なバリデーション
-    if (!decoded.title || !Array.isArray(decoded.items) || decoded.items.length === 0) {
-      return null
-    }
-    
-    return decoded as OmikujiConfig
+    const namesString = decodeURIComponent(escape(atob(encoded)))
+    return namesString ? namesString.split(',').filter(name => name.trim()) : []
   } catch (error) {
-    console.error('Failed to decode config from URL:', error)
-    return null
+    console.error('Failed to decode names from URL:', error)
+    return []
   }
 }
 
-export function updateUrlWithConfig(config: OmikujiConfig): void {
+export function updateUrlWithNames(names: string[]): void {
   try {
-    const encoded = btoa(encodeURIComponent(JSON.stringify(config)))
+    if (names.length === 0) {
+      clearNamesFromUrl()
+      return
+    }
+    
+    const namesString = names.join(',')
+    const encoded = btoa(unescape(encodeURIComponent(namesString)))
     const url = new URL(window.location.href)
-    url.searchParams.set(CONFIG_PARAM, encoded)
+    url.searchParams.set(NAMES_PARAM, encoded)
     
     // URLを更新（ページはリロードしない）
     window.history.replaceState({}, '', url.toString())
   } catch (error) {
-    console.error('Failed to update URL with config:', error)
+    console.error('Failed to update URL with names:', error)
   }
 }
 
-export function clearConfigFromUrl(): void {
+export function clearNamesFromUrl(): void {
   try {
     const url = new URL(window.location.href)
-    url.searchParams.delete(CONFIG_PARAM)
+    url.searchParams.delete(NAMES_PARAM)
     window.history.replaceState({}, '', url.toString())
   } catch (error) {
-    console.error('Failed to clear config from URL:', error)
+    console.error('Failed to clear names from URL:', error)
   }
 }
 
-export function copyConfigUrl(config: OmikujiConfig): Promise<boolean> {
+export function copyNamesUrl(names: string[]): Promise<boolean> {
   try {
-    const url = encodeConfigToUrl(config)
+    const url = encodeNamesToUrl(names)
     return navigator.clipboard.writeText(url).then(() => true).catch(() => false)
   } catch (error) {
-    console.error('Failed to copy config URL:', error)
+    console.error('Failed to copy names URL:', error)
     return Promise.resolve(false)
   }
 }

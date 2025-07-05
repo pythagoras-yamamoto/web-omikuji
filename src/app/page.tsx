@@ -1,27 +1,36 @@
-'use client'
+"use client";
 
-import { useOmikujiConfig } from '@/hooks/useOmikujiConfig'
-import OmikujiWheel from '@/components/OmikujiWheel'
-import ConfigPanel from '@/components/ConfigPanel'
+import { usePersonManager } from "@/hooks/usePersonManager";
+import OmikujiWheel from "@/components/OmikujiWheel";
+import PersonRegistration from "@/components/PersonRegistration";
+import ShareButton from "@/components/ShareButton";
 
 export default function Home() {
-  const { config, updateConfig, isLoading } = useOmikujiConfig()
+  const { persons, registerPerson, removePerson } = usePersonManager();
 
-  if (isLoading) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-red-500 border-t-transparent"></div>
-        <p className="mt-4 text-gray-600">読み込み中...</p>
-      </main>
-    )
-  }
+  const handlePersonRegister = (name: string) => {
+    try {
+      registerPerson(name);
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error;
+    }
+  };
+
+  const names = persons.map((p) => p.name);
 
   return (
     <main className="min-h-screen bg-gray-100 py-8">
       <div className="container mx-auto px-4">
-        <OmikujiWheel config={config} />
-        <ConfigPanel config={config} onConfigUpdate={updateConfig} />
+        <OmikujiWheel persons={persons} />
+        <PersonRegistration
+          persons={persons}
+          onPersonRegister={handlePersonRegister}
+          onPersonRemove={removePerson}
+        />
+
+        <ShareButton names={names} />
       </div>
     </main>
-  )
+  );
 }
