@@ -44,7 +44,7 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
 
   if (persons.length === 0) {
     return (
-      <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <div className="max-w-md mx-auto p-6 bg-white shadow-lg">
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           抽選
         </h1>
@@ -59,7 +59,7 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
   }
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-md mx-auto p-6 bg-white shadow-lg">
       <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">
         抽選
       </h2>

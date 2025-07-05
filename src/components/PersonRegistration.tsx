@@ -45,7 +45,7 @@ export default function PersonRegistration({
 
   return (
     <div className="max-w-md mx-auto mb-8">
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="bg-white shadow-lg p-6">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           名前を登録
         </h2>
