@@ -22,11 +22,11 @@ button:disabled { cursor: not-allowed; }
 .eyebrow { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 10px; font-weight: 400; letter-spacing: 1.1px; color: var(--muted); }
 .back-link { color: var(--muted); font-size: 12px; padding: 12px 0; }
 .back-link:hover { color: var(--ink); }
-.page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 38px 0 26px; }
+.page-heading { display: flex; align-items: flex-end; justify-content: flex-start; gap: 18px; padding: 38px 0 26px; }
 .page-heading h1 { font-size: 30px; font-weight: 650; letter-spacing: -1px; margin: 7px 0 0; }
 .page-heading h1 span { display: inline-block; vertical-align: middle; font-size: 11px; font-weight: 400; letter-spacing: 1px; border: 1px solid var(--line); border-radius: 4px; padding: 4px 7px; margin-left: 10px; }
-.page-heading > p { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
-.workspace { display: grid; grid-template-columns: minmax(0, 1fr) 286px; align-items: start; gap: 30px; padding-bottom: 54px; }
+.page-heading > p { font-size: 15px; color: var(--muted); margin-bottom: 6px; }
+.workspace { display: grid; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; gap: 30px; padding-bottom: 54px; }
 .draw-frame { border: 1px solid #777; border-radius: 10px; overflow: hidden; min-width: 0; }
 .frame-bar, .frame-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: var(--surface); padding: 12px 16px; }
 .frame-bar { border-bottom: 1px solid #aaa; font-family: "SFMono-Regular", Consolas, monospace; font-size: 9px; letter-spacing: .8px; }
@@ -49,63 +49,55 @@ button:disabled { cursor: not-allowed; }
 .ticket-art span:nth-child(3) { transform: rotate(23deg) translateX(42px); }
 .stage-content h2 { font-size: 24px; font-weight: 550; letter-spacing: 1px; margin: 0 0 11px; }
 .stage-content > p { color: var(--muted); font-size: 12px; line-height: 1.8; }
-.draw-action { width: 200px; margin-top: 28px; }
-.button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 20px; border: 1px solid transparent; border-radius: 6px; padding: 11px 18px; font-size: 12px; font-weight: 500; transition: background .15s, border-color .15s, transform .15s; }
+.draw-action { display: flex; gap: 12px; margin-top: 28px; }
+.button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 20px; border: 1px solid transparent; border-radius: 6px; padding: 11px 18px; font-size: 14px; font-weight: 500; transition: background .15s, border-color .15s, transform .15s; }
 .button-primary { background: var(--ink); color: #fff; }
 .button-primary:hover:not(:disabled) { background: #414141; }
 .button-primary:active:not(:disabled) { transform: translateY(1px); }
 .button-primary:disabled { background: #e2e2e2; color: #777; }
-.draw-action .button { width: 100%; justify-content: space-between; }
+.draw-action .button { width: 200px; justify-content: space-between; }
 .frame-footer { border-top: 1px solid #aaa; font-size: 10px; color: var(--muted); }
 .control-panel { min-width: 0; padding-top: 1px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.section-heading h2, .share-panel h2 { font-size: 13px; font-weight: 600; }
+.section-heading h2, .share-panel h2 { font-size: 18px; font-weight: 600; }
 .count-badge { min-width: 24px; padding: 3px 6px; text-align: center; border: 1px solid var(--line); border-radius: 4px; font-family: monospace; font-size: 10px; }
 .panel-description, .share-panel p { color: var(--muted); font-size: 11px; line-height: 1.9; margin-top: 10px; }
 .input-label { display: block; font-size: 11px; margin: 24px 0 9px; }
 .input-row { display: flex; gap: 8px; margin-top: 20px; }
-.input-row input { width: 0; min-width: 0; flex: 1; border: 1px solid #d6d6d6; border-radius: 6px; padding: 11px; background: #fff; font-size: 12px; }
+.input-row input { width: 0; min-width: 0; flex: 1; border: 1px solid #d6d6d6; border-radius: 6px; padding: 12px 14px; background: #fff; font-size: 15px; }
 .input-row input::placeholder { color: #8b8b8b; }
-.register-button { padding: 10px 15px; }
-.member-list { list-style: none; padding: 0; margin: 18px 0 0; max-height: 260px; overflow-y: auto; }
-.member-row { display: flex; align-items: center; gap: 12px; min-height: 48px; border-bottom: 1px solid #eee; }
-.member-number { font-family: monospace; font-size: 10px; color: #888; }
-.member-name { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 12px; }
-.remove-button { width: 36px; min-height: 40px; color: #777; font-size: 20px; border-radius: 4px; }
+.register-button { padding: 10px 18px; }
+.member-list { list-style: none; padding: 0; margin: 20px 0 0; max-height: 320px; overflow-y: auto; }
+.member-row { display: flex; align-items: center; gap: 14px; min-height: 56px; border-bottom: 1px solid #eee; }
+.member-number { font-family: monospace; font-size: 12px; color: #888; }
+.member-name { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 16px; }
+.remove-button { width: 40px; min-height: 44px; color: #777; font-size: 22px; border-radius: 4px; }
 .remove-button:hover { color: #111; background: #f1f1f1; }
 .empty-members { margin-top: 20px; padding: 24px 10px; text-align: center; border: 1px dashed #dcdcdc; border-radius: 6px; color: var(--muted); }
 .empty-members > span { display: block; font-size: 22px; margin-bottom: 10px; color: #aaa; }
-.empty-members p { font-size: 11px; margin-bottom: 6px; }
-.empty-members small { font-size: 10px; }
+.empty-members p { font-size: 14px; margin-bottom: 6px; }
+.empty-members small { font-size: 12px; }
 .share-panel { margin-top: 26px; padding-top: 23px; border-top: 1px solid var(--line); }
 .button-secondary { background: #fff; border-color: #d6d6d6; color: var(--ink); }
 .button-secondary:hover:not(:disabled) { background: #f6f6f6; border-color: #aaa; }
 .button-secondary:disabled { color: #999; background: #fafafa; }
-.share-button { margin-top: 14px; width: 100%; justify-content: space-between; }
 .privacy-note { color: var(--muted); font-size: 10px; line-height: 1.8; margin-top: 22px; }
 .form-error { font-size: 11px; color: #a12222; margin-top: 8px; }
 .draw-result { min-height: 261px; display: flex; flex-direction: column; justify-content: center; }
 .draw-result h2 { font-size: clamp(30px, 4vw, 54px); line-height: 1.4; overflow-wrap: anywhere; margin: 25px 0 12px; letter-spacing: -1px; }
 .draw-result > p:not(.eyebrow) { font-size: 13px; }
-.draw-result time { font-size: 10px; font-family: monospace; color: var(--muted); margin-top: 22px; }
-.draw-result .share-button { width: auto; align-self: center; margin-top: 18px; gap: 12px; }
-.site-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); margin-top: auto; padding: 22px 0 28px; color: var(--muted); font-size: 10px; }
-.site-footer > span:first-child { font-weight: 600; letter-spacing: 1px; }
-.home-intro { padding: 66px 0 54px; }
-.home-intro h1 { font-size: clamp(38px, 5vw, 58px); font-weight: 650; letter-spacing: -3px; line-height: 1.15; margin: 20px 0; }
-.home-intro h1 span { display: block; font-size: clamp(25px, 3vw, 36px); letter-spacing: 1px; line-height: 1.55; margin-top: 18px; font-weight: 500; }
-.home-intro > p:last-child { color: var(--muted); font-size: 13px; line-height: 1.8; }
-.tool-section { padding-bottom: 64px; }
-.tool-section > .section-heading { margin-bottom: 16px; }
+.draw-result time { font-size: 13px; font-family: monospace; color: var(--muted); margin-top: 22px; }
+.site-footer { min-height: 100px; display: flex; align-items: center; justify-content: flex-end; gap: 20px; border-top: 1px solid var(--line); margin-top: auto; padding: 0; color: var(--muted); font-size: 10px; }
+.home-main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px 0 40px; }
+.home-main .page-heading { padding-top: 0; }
+.tool-section { padding-bottom: 0; }
 .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; list-style: none; padding: 0; }
 .tool-card { display: flex; flex-direction: column; height: 100%; border: 1px solid #999; border-radius: 9px; overflow: hidden; transition: border-color .2s, background .2s; }
 .tool-card:hover { border-color: #222; background: #fafafa; }
-.tool-card-top { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding: 12px 20px; }
-.tool-card > .ticket-art { margin-top: 20px; margin-bottom: 14px; }
+.tool-card > .ticket-art { margin-top: 28px; margin-bottom: 14px; }
 .tool-card-bottom { padding: 0 24px 24px; }
 .tool-card h3, .coming-soon h3 { font-size: 19px; font-weight: 550; margin-bottom: 10px; }
 .tool-card p, .coming-soon p { color: var(--muted); font-size: 12px; line-height: 1.9; }
-.text-link { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); margin-top: 22px; padding-top: 17px; font-size: 12px; }
 .coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 25px; text-align: center; border: 1px dashed #d4d4d4; border-radius: 9px; padding: 30px; background: #fafafa; color: var(--muted); }
 .plus-mark { display: grid; place-items: center; width: 64px; height: 64px; font-size: 30px; font-weight: 300; border: 1px solid #ddd; border-radius: 50%; }
 .coming-soon h3 { font-size: 16px; }
@@ -118,20 +110,20 @@ button:disabled { cursor: not-allowed; }
 @media (min-width: 1500px) { .site-shell { padding-top: 20px; } }
 @media (max-width: 850px) {
   .site-shell { padding: 0 24px; }
-  .workspace { grid-template-columns: minmax(0, 1fr) 250px; gap: 22px; }
+  .workspace { grid-template-columns: minmax(0, 1fr) 290px; gap: 22px; }
   .stage-label { display: none; }
-  .page-heading > p { max-width: 150px; line-height: 1.8; }
 }
 @media (max-width: 640px) {
   .site-shell { padding: 0 20px; }
   .site-header { min-height: 76px; }
-  .site-header > .eyebrow { font-size: 8px; max-width: 130px; text-align: right; line-height: 1.8; }
   .wordmark { font-size: 22px; }
   .page-heading { padding: 28px 0 22px; display: block; }
   .page-heading h1 { font-size: 26px; }
-  .page-heading > p { max-width: none; margin-top: 10px; font-size: 11px; }
+  .page-heading > p { max-width: none; margin-top: 10px; font-size: 13px; }
   .workspace { grid-template-columns: minmax(0, 1fr); gap: 30px; padding-bottom: 36px; }
   .input-row input { font-size: 16px; }
+  .draw-action { width: 100%; flex-direction: column; align-items: center; }
+  .draw-action .button { width: 100%; max-width: 260px; }
   .draw-stage { min-height: 410px; padding: 40px 20px 30px; }
   .draw-orbit { transform: scale(.85); height: 150px; margin-bottom: 15px; }
   .stage-stat { top: 17px; left: 18px; }
@@ -142,12 +134,19 @@ button:disabled { cursor: not-allowed; }
   .frame-bar { font-size: 8px; padding: 11px 12px; }
   .frame-footer { padding: 12px; font-size: 9px; }
   .draw-result { min-height: 226px; }
-  .home-intro { padding: 44px 0 36px; }
-  .home-intro h1 { font-size: 42px; }
-  .tool-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+      .tool-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .coming-soon { padding: 30px 20px; gap: 18px; }
-  .site-footer { font-size: 9px; }
+  .site-footer { min-height: 76px; font-size: 9px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ページ遷移: トップのカード ⇄ おみくじ枠を滑らかに変形 */
+::view-transition-group(omikuji-frame) { animation-duration: .5s; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+::view-transition-old(omikuji-frame), ::view-transition-new(omikuji-frame) { width: 100%; height: 100%; object-fit: fill; }
+::view-transition-group(page-title) { animation-duration: .4s; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .3s; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }

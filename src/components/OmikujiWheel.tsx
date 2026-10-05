@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { OmikujiResult, RegisteredPerson } from "@/types/omikuji";
 import { drawRandomName } from "@/utils/omikuji";
-import { clearResultFromUrl, copyResultUrl, decodeResultFromUrl } from "@/utils/urlParams";
+import {
+  clearResultFromUrl,
+  copyResultUrl,
+  decodeResultFromUrl,
+} from "@/utils/urlParams";
+import ViewTransition from "@/components/ViewTransition";
 
 interface OmikujiWheelProps {
   persons: RegisteredPerson[];
@@ -12,7 +17,9 @@ interface OmikujiWheelProps {
 export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
   const [result, setResult] = useState<OmikujiResult | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
+    "idle",
+  );
 
   // 共有リンクから開かれた場合は、その結果を表示する
   useEffect(() => {
@@ -24,7 +31,10 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
 
   const handleShareResult = async () => {
     if (!result) return;
-    const success = await copyResultUrl(persons.map((p) => p.name), result);
+    const success = await copyResultUrl(
+      persons.map((p) => p.name),
+      result,
+    );
     setCopyStatus(success ? "copied" : "error");
     setTimeout(() => setCopyStatus("idle"), 2000);
   };
@@ -52,35 +62,70 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
   };
 
   return (
-    <section className={`draw-frame${isDrawing ? " is-drawing" : ""}`} aria-label="抽選">
-      <div className="draw-stage">
-        <div className="stage-content" aria-live="polite" aria-atomic="true">
-          {result ? (
-            <div className="draw-result animate-fadeIn">
-              <h2>{result.selectedName}</h2>
-              <p>さんが選ばれました！</p>
-              <time dateTime={result.timestamp.toISOString()}>{result.timestamp.toLocaleString("ja-JP")}</time>
-              <div aria-live="polite">
-                <button type="button" className="button button-secondary share-button" onClick={handleShareResult}>
-                  {copyStatus === "copied" ? "コピー済み!" : copyStatus === "error" ? "エラー" : "結果を共有"}
-                  <span aria-hidden="true">{copyStatus === "copied" ? "✓" : "↗"}</span>
-                </button>
+    <ViewTransition name="omikuji-frame">
+      <section
+        className={`draw-frame${isDrawing ? " is-drawing" : ""}`}
+        aria-label="抽選"
+      >
+        <div className="draw-stage">
+          <div className="stage-content" aria-live="polite" aria-atomic="true">
+            {result ? (
+              <div className="draw-result animate-fadeIn">
+                <h2>{result.selectedName}</h2>
+                <p>さんが選ばれました！</p>
+                <time dateTime={result.timestamp.toISOString()}>
+                  {result.timestamp.toLocaleString("ja-JP")}
+                </time>
               </div>
-            </div>
-          ) : (
-            <>
-              <div className="draw-orbit" aria-hidden="true"><div className="ticket-art"><span>?</span><span>運</span><span>?</span></div></div>
-              <h2>{isDrawing ? "運をまぜています。" : "さて、誰の番？"}</h2>
-              <p>{isDrawing ? "抽選中..." : persons.length ? "準備ができたら、運だめし。" : "抽選を行うには、まず名前を登録してください"}</p>
-            </>
-          )}
+            ) : (
+              <>
+                <div className="draw-orbit" aria-hidden="true">
+                  <div className="ticket-art">
+                    <span>?</span>
+                    <span>●</span>
+                    <span>?</span>
+                  </div>
+                </div>
+                <h2>{isDrawing ? "選んでいます…" : "誰にする？"}</h2>
+                <p>
+                  {isDrawing
+                    ? "抽選中..."
+                    : persons.length
+                      ? "ボタンを押すと、メンバーからランダムに1人を選びます。"
+                      : "まずメンバーを登録してください"}
+                </p>
+              </>
+            )}
+          </div>
+          <div className="draw-action">
+            <button
+              className="button button-primary"
+              onClick={result ? handleReset : handleDraw}
+              disabled={isDrawing || (!result && persons.length === 0)}
+            >
+              {isDrawing ? "抽選中..." : result ? "もう一度抽選" : "抽選する"}
+              <span aria-hidden="true">{result ? "↻" : "→"}</span>
+            </button>
+            {result && (
+              <button
+                type="button"
+                className="button button-secondary share-button"
+                onClick={handleShareResult}
+                aria-live="polite"
+              >
+                {copyStatus === "copied"
+                  ? "コピー済み!"
+                  : copyStatus === "error"
+                    ? "エラー"
+                    : "結果を共有"}
+                <span aria-hidden="true">
+                  {copyStatus === "copied" ? "✓" : "↗"}
+                </span>
+              </button>
+            )}
+          </div>
         </div>
-        <div className="draw-action">
-          <button className="button button-primary" onClick={result ? handleReset : handleDraw} disabled={isDrawing || (!result && persons.length === 0)}>
-            {isDrawing ? "抽選中..." : result ? "もう一度抽選" : "抽選する"}<span aria-hidden="true">{result ? "↻" : "→"}</span>
-          </button>
-        </div>
-      </div>
-    </section>
+      </section>
+    </ViewTransition>
   );
 }

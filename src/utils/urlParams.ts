@@ -129,7 +129,7 @@ export function clearResultFromUrl(): void {
 export function copyResultUrl(names: string[], result: SharedResult): Promise<boolean> {
   try {
     const url = encodeResultToUrl(names, result)
-    const text = `🎯 おみくじの結果: ${result.selectedName} さんが選ばれました！\n${url}`
+    const text = `🎯 ${result.selectedName} さんが選ばれました！\n${url}`
     return navigator.clipboard.writeText(text).then(() => true).catch(() => false)
   } catch (error) {
     console.error('Failed to copy result URL:', error)

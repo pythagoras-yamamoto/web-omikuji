@@ -2,9 +2,10 @@ import { render, screen } from '@testing-library/react'
 import Home from './page'
 
 describe('Home (KOMONO top)', () => {
-  it('renders KOMONO heading', () => {
+  it('renders wordmark and tool list heading', () => {
     render(<Home />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('KOMONO')
+    expect(screen.getAllByText('KOMONO').length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('ツール一覧')
   })
 
   it('links to omikuji', () => {
