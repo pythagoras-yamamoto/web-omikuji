@@ -18,15 +18,13 @@ export default function PersonRegistration({
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState("");
 
-  const handleRegister = async () => {
+  const handleRegister = () => {
     if (!newName.trim()) {
       setError("名前を入力してください");
       return;
     }
-
     setIsRegistering(true);
     setError("");
-
     try {
       onPersonRegister(newName.trim());
       setNewName("");
@@ -37,70 +35,46 @@ export default function PersonRegistration({
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleRegister();
-    }
-  };
-
   return (
-    <div className="max-w-md mx-auto mb-8">
-      <div className="bg-white shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          名前を登録
-        </h2>
-
-        {/* 新規登録フォーム */}
-        <div className="mb-6">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="お名前を入力"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              disabled={isRegistering}
-            />
-            <button
-              onClick={handleRegister}
-              disabled={isRegistering || !newName.trim()}
-              className="px-6 py-3 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white font-bold rounded-lg transition-colors duration-200"
-            >
-              {isRegistering ? "登録中..." : "登録"}
-            </button>
-          </div>
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+    <section className="registration-panel" aria-labelledby="members-heading">
+      <div className="section-heading"><h2 id="members-heading">メンバー</h2></div>
+      <form onSubmit={(event) => { event.preventDefault(); handleRegister(); }}>
+        <div className="input-row">
+          <input
+            id="member-name"
+            type="text"
+            value={newName}
+            onChange={(event) => setNewName(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && (event.nativeEvent.isComposing || event.keyCode === 229)) event.preventDefault();
+            }}
+            placeholder="お名前を入力"
+            aria-label="名前"
+            aria-describedby={error ? "registration-error" : undefined}
+            aria-invalid={!!error}
+            disabled={isRegistering}
+          />
+          <button type="submit" disabled={isRegistering || !newName.trim()} className="button button-primary register-button">
+            {isRegistering ? "登録中..." : "登録"}
+          </button>
         </div>
-
-        {/* 登録済みの名前一覧 */}
-        {persons.length > 0 && (
-          <div className="space-y-2">
-            {persons.map((person) => (
-              <div
-                key={person.name}
-                className="flex items-center justify-between p-3 rounded-lg border bg-gray-50 border-gray-200"
-              >
-                <div className="flex-1">
-                  <span className="font-medium text-gray-800">
-                    {person.name}
-                  </span>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onPersonRemove(person.name);
-                  }}
-                  className="text-red-500 hover:text-red-700 text-sm px-2 py-1"
-                >
-                  削除
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-      </div>
-    </div>
+        {error && <p id="registration-error" role="alert" className="form-error">{error}</p>}
+      </form>
+      {persons.length > 0 ? (
+        <ul className="member-list">
+          {persons.map((person, index) => (
+            <li key={person.name} className="member-row">
+              <span className="member-number">{String(index + 1).padStart(2, "0")}</span>
+              <span className="member-name">{person.name}</span>
+              <button onClick={() => onPersonRemove(person.name)} className="remove-button" aria-label={`${person.name}を削除`}>
+                <span aria-hidden="true">×</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="empty-members"><span aria-hidden="true">＋</span><p>まだメンバーがいません</p><small>最初のひとりを追加しましょう。</small></div>
+      )}
+    </section>
   );
 }

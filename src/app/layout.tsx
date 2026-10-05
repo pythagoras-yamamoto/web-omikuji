@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Web Omikuji',
-  description: 'おみくじアプリ',
+  title: 'KOMONO',
+  description: 'チームでさっと使える小物集',
 }
 
 export default function RootLayout({

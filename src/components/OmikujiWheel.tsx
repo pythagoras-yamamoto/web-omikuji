@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OmikujiResult, RegisteredPerson } from "@/types/omikuji";
 import { drawRandomName } from "@/utils/omikuji";
+import { clearResultFromUrl, copyResultUrl, decodeResultFromUrl } from "@/utils/urlParams";
 
 interface OmikujiWheelProps {
   persons: RegisteredPerson[];
@@ -11,25 +12,32 @@ interface OmikujiWheelProps {
 export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
   const [result, setResult] = useState<OmikujiResult | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
+
+  // 共有リンクから開かれた場合は、その結果を表示する
+  useEffect(() => {
+    const shared = decodeResultFromUrl();
+    if (shared) {
+      setResult(shared);
+    }
+  }, []);
+
+  const handleShareResult = async () => {
+    if (!result) return;
+    const success = await copyResultUrl(persons.map((p) => p.name), result);
+    setCopyStatus(success ? "copied" : "error");
+    setTimeout(() => setCopyStatus("idle"), 2000);
+  };
 
   const handleDraw = async () => {
     if (isDrawing || persons.length === 0) return;
-
     setIsDrawing(true);
     setResult(null);
-
-    // アニメーション効果のための遅延
+    clearResultFromUrl();
     await new Promise((resolve) => setTimeout(resolve, 1000));
-
     try {
-      const names = persons.map((p) => p.name);
-      const selectedName = drawRandomName(names);
-      const newResult: OmikujiResult = {
-        selectedName,
-        timestamp: new Date(),
-      };
-
-      setResult(newResult);
+      const selectedName = drawRandomName(persons.map((person) => person.name));
+      setResult({ selectedName, timestamp: new Date() });
     } catch (error) {
       console.error("抽選エラー:", error);
     } finally {
@@ -40,70 +48,39 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
   const handleReset = () => {
     setResult(null);
     setIsDrawing(false);
+    clearResultFromUrl();
   };
 
-  if (persons.length === 0) {
-    return (
-      <div className="max-w-md mx-auto p-6 bg-white shadow-lg">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-          抽選
-        </h1>
-        <div className="text-center">
-          <p className="text-gray-600 mb-4">
-            抽選を行うには、まず名前を登録してください
-          </p>
-          <div className="text-6xl mb-4">🎯</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">
-        抽選
-      </h2>
-
-      <div className="text-center mb-8">
-        {!result && !isDrawing && (
-          <button
-            onClick={handleDraw}
-            className="px-8 py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg rounded-lg transition-colors duration-200 shadow-lg"
-          >
-            抽選する
-          </button>
-        )}
-
-        {isDrawing && (
-          <div className="py-4">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto"></div>
-            <p className="mt-4 text-gray-600">抽選中...</p>
-          </div>
-        )}
-
-        {result && (
-          <div className="animate-fadeIn">
-            <div className="mx-auto w-40 h-40 rounded-full flex items-center justify-center bg-gradient-to-br from-yellow-400 to-orange-500 text-white font-bold text-xl shadow-lg mb-4">
-              <div className="text-center">
-                <div className="text-2xl mb-1">🎉</div>
-                <div>{result.selectedName}</div>
+    <section className={`draw-frame${isDrawing ? " is-drawing" : ""}`} aria-label="抽選">
+      <div className="draw-stage">
+        <div className="stage-content" aria-live="polite" aria-atomic="true">
+          {result ? (
+            <div className="draw-result animate-fadeIn">
+              <h2>{result.selectedName}</h2>
+              <p>さんが選ばれました！</p>
+              <time dateTime={result.timestamp.toISOString()}>{result.timestamp.toLocaleString("ja-JP")}</time>
+              <div aria-live="polite">
+                <button type="button" className="button button-secondary share-button" onClick={handleShareResult}>
+                  {copyStatus === "copied" ? "コピー済み!" : copyStatus === "error" ? "エラー" : "結果を共有"}
+                  <span aria-hidden="true">{copyStatus === "copied" ? "✓" : "↗"}</span>
+                </button>
               </div>
             </div>
-            <p className="text-lg text-gray-700 mb-2">
-              <strong>{result.selectedName}</strong>さんが選ばれました！
-            </p>
-            <p className="text-sm text-gray-500 mb-6">
-              {result.timestamp.toLocaleString("ja-JP")}
-            </p>
-            <button
-              onClick={handleReset}
-              className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors duration-200"
-            >
-              もう一度抽選
-            </button>
-          </div>
-        )}
+          ) : (
+            <>
+              <div className="draw-orbit" aria-hidden="true"><div className="ticket-art"><span>?</span><span>運</span><span>?</span></div></div>
+              <h2>{isDrawing ? "運をまぜています。" : "さて、誰の番？"}</h2>
+              <p>{isDrawing ? "抽選中..." : persons.length ? "準備ができたら、運だめし。" : "抽選を行うには、まず名前を登録してください"}</p>
+            </>
+          )}
+        </div>
+        <div className="draw-action">
+          <button className="button button-primary" onClick={result ? handleReset : handleDraw} disabled={isDrawing || (!result && persons.length === 0)}>
+            {isDrawing ? "抽選中..." : result ? "もう一度抽選" : "抽選する"}<span aria-hidden="true">{result ? "↻" : "→"}</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
