@@ -9,6 +9,8 @@ import {
   decodeResultFromUrl,
 } from "@/utils/urlParams";
 import ViewTransition from "@/components/ViewTransition";
+import OchanomaParade from "@/components/ochanoma/Parade";
+import PixelCrackers from "@/components/ochanoma/PixelCrackers";
 
 interface OmikujiWheelProps {
   persons: RegisteredPerson[];
@@ -20,12 +22,15 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
     "idle",
   );
+  // 抽選が決まるたびに増やして、クラッカーを鳴らす
+  const [burstKey, setBurstKey] = useState(0);
 
   // 共有リンクから開かれた場合は、その結果を表示する
   useEffect(() => {
     const shared = decodeResultFromUrl();
     if (shared) {
       setResult(shared);
+      setBurstKey((k) => k + 1);
     }
   }, []);
 
@@ -48,6 +53,7 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
     try {
       const selectedName = drawRandomName(persons.map((person) => person.name));
       setResult({ selectedName, timestamp: new Date() });
+      setBurstKey((k) => k + 1);
     } catch (error) {
       console.error("抽選エラー:", error);
     } finally {
@@ -86,7 +92,7 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
                     <span>?</span>
                   </div>
                 </div>
-                <h2>{isDrawing ? "選んでいます…" : "誰にする？"}</h2>
+                <h1>{isDrawing ? "選んでいます…" : "おみくじ"}</h1>
                 <p>
                   {isDrawing
                     ? "抽選中..."
@@ -99,6 +105,7 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
           </div>
           <div className="draw-action">
             <button
+              data-perch
               className="button button-primary"
               onClick={result ? handleReset : handleDraw}
               disabled={isDrawing || (!result && persons.length === 0)}
@@ -109,6 +116,7 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
             {result && (
               <button
                 type="button"
+                data-perch
                 className="button button-secondary share-button"
                 onClick={handleShareResult}
                 aria-live="polite"
@@ -124,6 +132,8 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
               </button>
             )}
           </div>
+          <OchanomaParade />
+          <PixelCrackers burstKey={burstKey} />
         </div>
       </section>
     </ViewTransition>
