@@ -8,6 +8,7 @@
   --muted: #6e7480;
   --faint: #a6a9a0;
   --line: #e7e5dc;
+  --line-strong: #c4c1b4;
   --mist: #f3f1ea;
   --tea: #0a7f5f;
   --tea-dark: #086b50;
@@ -74,7 +75,7 @@ h1, h2, h3 { color: var(--ink); letter-spacing: -0.01em; }
 .workspace { display: grid; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; gap: 32px; }
 
 /* 抽選パネル: ヒーローと同じパステルグリーンのパネル */
-.draw-frame { position: relative; min-width: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+.draw-frame { position: relative; min-width: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--line-strong); }
 .draw-stage {
   position: relative; min-height: 486px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 56px 28px 92px;
   background:
@@ -94,6 +95,8 @@ h1, h2, h3 { color: var(--ink); letter-spacing: -0.01em; }
 .stage-content > p { color: var(--body); font-size: 14px; }
 .draw-action { position: relative; z-index: 2; display: flex; gap: 12px; margin-top: 30px; }
 .draw-action .button { width: 200px; justify-content: space-between; }
+/* ボタン右端のアイコン(→ ↻ ↗ ✓)は文字より一回り大きく */
+.draw-action .button > span[aria-hidden] { font-size: 20px; line-height: 1; }
 .draw-result { min-height: 261px; display: flex; flex-direction: column; justify-content: center; }
 .draw-result h2 { font-size: clamp(36px, 4.5vw, 56px); font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; margin: 20px 0 10px; }
 .draw-result > p { font-size: 15px; color: var(--body); }
@@ -103,19 +106,16 @@ h1, h2, h3 { color: var(--ink); letter-spacing: -0.01em; }
 .pixel-crackers { position: absolute; inset: 0; pointer-events: none; z-index: 3; opacity: 0; }
 .pixel-crackers.is-active { opacity: 1; }
 .pixel-crackers .confetti { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
-.pixel-crackers .cracker { position: absolute; bottom: 14px; width: 48px; height: 48px; image-rendering: pixelated; opacity: 0; }
-.pixel-crackers .cracker-left { left: 14px; transform-origin: 10% 90%; }
-.pixel-crackers .cracker-right { right: 14px; transform: scaleX(-1); transform-origin: 90% 90%; }
-@keyframes crackerPopLeft { 0% { opacity: 1; transform: rotate(0) scale(1); } 12% { transform: rotate(-18deg) scale(1.18); } 30% { transform: rotate(4deg) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: rotate(0) scale(1); } }
-@keyframes crackerPopRight { 0% { opacity: 1; transform: scaleX(-1) rotate(0) scale(1); } 12% { transform: scaleX(-1) rotate(-18deg) scale(1.18); } 30% { transform: scaleX(-1) rotate(4deg) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: scaleX(-1) rotate(0) scale(1); } }
-.pixel-crackers .cracker-left.is-popping { animation: crackerPopLeft 1.8s steps(12) forwards; }
-.pixel-crackers .cracker-right.is-popping { animation: crackerPopRight 1.8s steps(12) forwards; }
 
 /* 住民たちの通り道: パネル下辺 */
 .ochanoma-parade { pointer-events: none; position: absolute; left: 24px; right: 24px; bottom: 18px; height: 50px; z-index: 1; }
+/* 住民の名札: 頭上に小さく、普段は薄く。近づくと少し濃く、当選者は墨色で */
+.ochanoma-name { position: absolute; left: 0; bottom: 0; max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 10px; line-height: 1; letter-spacing: .02em; color: var(--faint); pointer-events: none; user-select: none; transition: color .2s, opacity .2s; opacity: .8; }
+.ochanoma-name.is-near { color: var(--muted); opacity: 1; }
+.ochanoma-name.is-winner { color: var(--ink); opacity: 1; font-weight: 600; }
 
 /* 右パネル: メンバー */
-.control-panel { min-width: 0; background: var(--cream); border: 1px solid var(--line); border-radius: 12px; padding: 22px 22px 20px; }
+.control-panel { min-width: 0; background: var(--cream); border: 1px solid var(--line-strong); border-radius: 12px; padding: 22px 22px 20px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .section-heading h2 { font-size: 18px; font-weight: 700; }
 .input-row { display: flex; gap: 10px; margin-top: 18px; }
@@ -125,7 +125,6 @@ h1, h2, h3 { color: var(--ink); letter-spacing: -0.01em; }
 .register-button { padding: 8px 18px; min-height: 44px; }
 .member-list { list-style: none; padding: 0; margin: 20px 0 0; max-height: 320px; overflow-y: auto; }
 .member-row { display: flex; align-items: center; gap: 14px; min-height: 54px; border-bottom: 1px dashed var(--line); }
-.member-number { font-family: var(--font-mono); font-size: 12px; color: var(--faint); }
 .member-name { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 16px; color: var(--ink); }
 .remove-button { width: 36px; min-height: 36px; border-radius: 999px; color: var(--muted); font-size: 20px; line-height: 1; transition: background .15s, color .15s; }
 .remove-button:hover { color: var(--ink); background: var(--mist); }
@@ -139,15 +138,15 @@ h1, h2, h3 { color: var(--ink); letter-spacing: -0.01em; }
 .home-main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px 0 40px; }
 .home-main .page-heading { padding-top: 0; }
 .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; list-style: none; padding: 0; }
-.tool-card { display: flex; flex-direction: column; height: 100%; background: var(--cream); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: border-color .2s; }
+.tool-card { display: flex; flex-direction: column; height: 100%; background: var(--cream); border: 1px solid var(--line-strong); border-radius: 16px; overflow: hidden; transition: border-color .2s; }
 .tool-card:hover { border-color: var(--ink); }
-.tool-card > .ticket-art { width: 100%; height: 186px; margin: 0; background: linear-gradient(to right, #d3e7da 0%, #e2efdd 55%, #dceaca 100%); border-bottom: 1px solid var(--line); }
+.tool-card > .ticket-art { width: 100%; height: 186px; margin: 0; background: linear-gradient(to right, #d3e7da 0%, #e2efdd 55%, #dceaca 100%); border-bottom: 1px solid var(--line-strong); }
 .tool-card > .ticket-art span { left: calc(50% - 34px); top: 40px; }
 .tool-card > .ticket-art span:nth-child(2) { top: 29px; }
 .tool-card-bottom { padding: 22px 24px 26px; }
 .tool-card h3, .coming-soon h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
 .tool-card p, .coming-soon p { color: var(--muted); font-size: 14px; }
-.coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; text-align: center; border: 1px dashed var(--line); border-radius: 16px; padding: 30px; background: var(--mist); color: var(--muted); }
+.coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; text-align: center; border: 1px dashed var(--line-strong); border-radius: 16px; padding: 30px; background: var(--mist); color: var(--muted); }
 .coming-soon .eyebrow { font-family: var(--font-display); font-size: 12px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--tea); }
 .plus-mark { display: grid; place-items: center; width: 60px; height: 60px; font-size: 28px; font-weight: 300; border: 1px solid var(--line); border-radius: 50%; background: var(--cream); }
 .coming-soon h3 { font-size: 16px; }
@@ -156,6 +155,20 @@ h1, h2, h3 { color: var(--ink); letter-spacing: -0.01em; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes shuffle { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-9px) rotate(3deg); } }
 .animate-fadeIn { animation: fadeIn .4s ease-out; }
+
+/* 浮き出る: メンバー行の追加/削除 */
+@keyframes riseIn { from { opacity: 0; transform: translateY(10px) scale(.98); filter: blur(2px); } to { opacity: 1; transform: translateY(0) scale(1); filter: none; } }
+@keyframes sinkOut { from { opacity: 1; transform: translateY(0) scale(1); max-height: 54px; } 60% { opacity: 0; transform: translateY(8px) scale(.98); max-height: 54px; } to { opacity: 0; transform: translateY(8px) scale(.98); max-height: 0; } }
+.member-row { animation: riseIn .36s cubic-bezier(.2, .7, .2, 1) both; }
+.member-row.is-leaving { animation: sinkOut .28s ease-in forwards; overflow: hidden; pointer-events: none; min-height: 0; border-bottom-color: transparent; }
+
+/* 浮き出る: 「次の小物」カードはふわっと現れ、＋がゆっくり呼吸する */
+@keyframes floatUp { from { opacity: 0; transform: translateY(18px); filter: blur(3px); } to { opacity: 1; transform: translateY(0); filter: none; } }
+@keyframes breathe { 0%, 100% { opacity: .55; transform: translateY(0) scale(1); } 50% { opacity: 1; transform: translateY(-4px) scale(1.04); } }
+.coming-soon { animation: floatUp .7s cubic-bezier(.2, .7, .2, 1) .25s both; }
+/* 浮き出る: おみくじページのメンバーカードも、枠より少し遅れてふわっと現れる */
+.control-panel { animation: floatUp .7s cubic-bezier(.2, .7, .2, 1) .2s both; }
+.coming-soon .plus-mark { animation: breathe 3.2s ease-in-out 1s infinite; }
 .is-drawing .ticket-art { animation: shuffle .25s ease-in-out infinite; }
 
 /* ページ遷移: トップのカード ⇄ おみくじ枠を滑らかに変形 */

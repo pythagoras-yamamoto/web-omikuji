@@ -2,37 +2,15 @@
 
 import { useEffect, useRef } from "react";
 
-import { drawSprite, residentColors, type PixelRows } from "./sprites";
+import { residentColors } from "./sprites";
 
-// 抽選結果が出た瞬間に鳴る、ドット絵のクラッカー。
+// 抽選結果が出た瞬間に舞う、ドット絵の紙吹雪(クラッカー本体は描かない)。
 // パネルの左右下の角から、四角いドットの紙吹雪が放物線を描いて舞う。
 // 紙吹雪は 4px グリッドに吸着させ、ドット絵らしくカクカク動かす。
 const PX = 4; // 紙吹雪 1 ドットの大きさ
 const DURATION_MS = 1800;
 const COUNT_PER_SIDE = 46;
 const GRAVITY = 900;
-
-// クラッカー本体(12×12)。筒(C/c)と口(M)、ひも(S)
-const cracker: PixelRows = [
-  "..........MM",
-  ".........MMM",
-  "........MMM.",
-  ".......CCC..",
-  "......CcCC..",
-  ".....CCcC...",
-  "....CCcC....",
-  "...CCcC.....",
-  "..CCcC......",
-  ".CCCC.......",
-  "SCCC........",
-  "S...........",
-];
-const crackerColors = {
-  C: "#f2bE2e",
-  c: "#ffd34d",
-  M: "#232936",
-  S: "#a97d53",
-};
 
 const palette = [...residentColors, "#ffd34d", "#0a7f5f", "#232936"];
 
@@ -49,8 +27,6 @@ type Piece = {
 
 export default function PixelCrackers({ burstKey }: { burstKey: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const crackerLeft = useRef<HTMLCanvasElement>(null);
-  const crackerRight = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (burstKey === 0) return;
@@ -61,17 +37,6 @@ export default function PixelCrackers({ burstKey }: { burstKey: number }) {
     if (!ctx) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
-
-    // クラッカー本体を描いて、ぽんっと傾ける
-    const popCrackers = [crackerLeft.current, crackerRight.current];
-    popCrackers.forEach((el) => {
-      const c = el?.getContext("2d");
-      if (!el || !c) return;
-      drawSprite(c, cracker, crackerColors);
-      el.classList.remove("is-popping");
-      void el.offsetWidth; // アニメーション再始動
-      el.classList.add("is-popping");
-    });
 
     const rect = canvas.getBoundingClientRect();
     canvas.width = Math.floor(rect.width);
@@ -148,8 +113,6 @@ export default function PixelCrackers({ burstKey }: { burstKey: number }) {
   const show = burstKey > 0;
   return (
     <div aria-hidden="true" className={`pixel-crackers${show ? " is-active" : ""}`}>
-      <canvas ref={crackerLeft} width={12} height={12} className="cracker cracker-left" />
-      <canvas ref={crackerRight} width={12} height={12} className="cracker cracker-right" />
       <canvas ref={canvasRef} className="confetti" />
     </div>
   );

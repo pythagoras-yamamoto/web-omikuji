@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { RegisteredPerson } from "@/types/omikuji";
+
+const LEAVE_MS = 280;
 
 interface PersonRegistrationProps {
   persons: RegisteredPerson[];
@@ -17,6 +19,21 @@ export default function PersonRegistration({
   const [newName, setNewName] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState("");
+  // 削除中(フェードアウト中)のメンバー名。アニメーションが終わってから実際に削除する
+  const [leaving, setLeaving] = useState<string[]>([]);
+  // タイマー発火時に最新の onPersonRemove を呼ぶため(連続削除で古い一覧に戻らないように)
+  const onRemoveRef = useRef(onPersonRemove);
+  onRemoveRef.current = onPersonRemove;
+
+  const handleRemove = (name: string) => {
+    if (leaving.includes(name)) return;
+    setLeaving((prev) => [...prev, name]);
+    // CSS の .member-row.is-leaving と同じ長さだけ待ってから実際に削除する
+    window.setTimeout(() => {
+      setLeaving((prev) => prev.filter((n) => n !== name));
+      onRemoveRef.current(name);
+    }, LEAVE_MS);
+  };
 
   const handleRegister = () => {
     if (!newName.trim()) {
@@ -62,11 +79,10 @@ export default function PersonRegistration({
       </form>
       {persons.length > 0 ? (
         <ul className="member-list">
-          {persons.map((person, index) => (
-            <li key={person.name} className="member-row">
-              <span className="member-number">{String(index + 1).padStart(2, "0")}</span>
+          {persons.map((person) => (
+            <li key={person.name} className={`member-row${leaving.includes(person.name) ? " is-leaving" : ""}`}>
               <span className="member-name">{person.name}</span>
-              <button onClick={() => onPersonRemove(person.name)} className="remove-button" aria-label={`${person.name}を削除`}>
+              <button onClick={() => handleRemove(person.name)} className="remove-button" aria-label={`${person.name}を削除`}>
                 <span aria-hidden="true">×</span>
               </button>
             </li>

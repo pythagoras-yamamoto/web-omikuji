@@ -132,7 +132,12 @@ export default function OmikujiWheel({ persons }: OmikujiWheelProps) {
               </button>
             )}
           </div>
-          <OchanomaParade />
+          {/* 住民はメンバー 1 人につき 1 体。結果が表示されている間だけ歩き、「もう一度抽選」で止まる。当選者は大きくなる */}
+          <OchanomaParade
+            active={result !== null}
+            members={persons.map((p) => p.name)}
+            winner={result?.selectedName ?? null}
+          />
           <PixelCrackers burstKey={burstKey} />
         </div>
       </section>
